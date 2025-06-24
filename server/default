@@ -1,0 +1,33 @@
+server {
+    listen 80;
+    server_name 118.25.67.226;
+
+    # 静态文件访问
+    location /images/ {
+        alias /var/www/images/;
+        autoindex on;
+        access_log off;
+    }
+
+    # 图片上传路径
+    location /upload {
+         proxy_pass http://localhost:8080/upload;
+         proxy_set_header Host $host;
+         proxy_set_header X-Real-IP $remote_addr;
+         proxy_set_header X-Forwarded-For $proxy_add_x_forwarded_for;
+         proxy_set_header X-Forwarded-Proto $scheme;
+    }
+
+
+     location / {
+        root html;
+        index index.html index.htm;
+    }
+
+    # 错误页面配置（可选）
+    error_page 500 502 503 504 /50x.html;
+    location = /50x.html {
+        root /var/www/html;
+    }
+}
+
